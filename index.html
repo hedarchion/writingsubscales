@@ -7,57 +7,449 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        :root {
+            --font-main: 'Inter', sans-serif;
+            
+            /* Pastel Color Scheme */
+            --color-a2: #ffdac1; /* Mellow Apricot */
+            --color-b1: #e0bbe4; /* Thistle */
+            --color-b2: #bde0fe; /* Light Blue */
+            --color-c1: #cceac4; /* Tea Green */
+            --color-c2: #ffc8dd; /* Pink Sherbet */
+
+            --color-bg: #f8f9fa;
+            --color-surface: #ffffff;
+            --color-text: #212529;
+            --color-border: #dee2e6;
+            --color-primary: #007bff;
+            --color-primary-hover: #0056b3;
+            --color-secondary: #6c757d;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding: 0 1rem 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 2rem;
+        }
+
+        h1, h2 {
+            font-weight: 700;
+        }
+
+        main {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            gap: 2rem;
+        }
+
+        .control-section {
+            background: var(--color-surface);
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .controls-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .button-wrapper {
+            margin-left: auto;
+        }
+
+        /* Form Elements */
+        select, button {
+            font-family: var(--font-main);
+            font-size: 1rem;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+            background-color: #fff;
+        }
+
+        button {
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--color-primary-hover);
+        }
+        
+        button.secondary {
+             background-color: var(--color-secondary);
+        }
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+
+        fieldset {
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 1rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        legend {
+            font-weight: 600;
+            padding: 0 0.5rem;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Results Area */
+        #results-container {
+            background: var(--color-surface);
+            padding: 1rem 2rem 2rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            min-height: 100px;
+        }
+
+        .placeholder {
+            color: #6c757d;
+            text-align: center;
+            font-size: 1.1rem;
+            padding-top: 2rem;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        th, td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border: 1px solid var(--color-border);
+            vertical-align: top;
+        }
+
+        thead th {
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            background-color: #f1f3f5;
+        }
+        
+        thead tr:nth-child(2) th {
+            top: 45px; /* Adjust based on first row height */
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tbody td:first-child {
+            font-weight: 600;
+            text-align: center;
+        }
+
+        td[colspan] {
+            text-align: center;
+            font-style: italic;
+            color: var(--color-text-light);
+            background-color: #e9ecef !important;
+        }
+
+        /* Level Color Classes */
+        .th-a2 { background-color: var(--color-a2) !important; }
+        .th-b1 { background-color: var(--color-b1) !important; }
+        .th-b2 { background-color: var(--color-b2) !important; }
+        .th-c1 { background-color: var(--color-c1) !important; }
+        .th-c2 { background-color: var(--color-c2) !important; }
+    </style>
 </head>
 <body>
 
     <header>
         <h1>CEFR Writing Assessment Scales Viewer</h1>
-        <p>Select a mode below to view or compare writing assessment criteria.</p>
     </header>
 
     <main>
-        <!-- Mode 1: Single Level View -->
+        <!-- Feature 1: Single Level Toggle -->
         <section class="control-section">
-            <h2>Single Level View</h2>
-            <p>Select a single CEFR level to see all of its assessment criteria.</p>
+            <h2>Single Level Full View</h2>
+            <p>Select a CEFR level to see its complete assessment table. You can copy the table in Markdown format.</p>
             <div class="controls-wrapper">
-                <label for="single-level-select">Select Level:</label>
-                <select id="single-level-select">
+                <label for="level-select"><b>Select Level:</b></label>
+                <select id="level-select">
                     <option value="">-- Choose a level --</option>
                 </select>
-            </div>
-        </section>
-
-        <!-- Mode 2: Multi-Level Comparison -->
-        <section class="control-section">
-            <h2>Multi-Level Comparison</h2>
-            <p>Select multiple levels and one subscale to compare them side-by-side.</p>
-            <div class="controls-wrapper">
-                 <fieldset>
-                    <legend>1. Choose Levels to Compare</legend>
-                    <div id="multi-level-checkboxes" class="checkbox-group">
-                        <!-- Checkboxes will be generated by JS -->
-                    </div>
-                </fieldset>
-
-                <div class="subscale-select-wrapper">
-                    <label for="subscale-select">2. Choose Subscale to Compare:</label>
-                    <select id="subscale-select">
-                        <!-- Options will be generated by JS -->
-                    </select>
+                <div class="button-wrapper">
+                    <button id="copy-markdown-button" class="secondary" style="display: none;">Copy as Markdown</button>
                 </div>
-               
-                <button id="compare-button">Compare</button>
             </div>
         </section>
 
-        <!-- Results Container -->
+        <!-- Feature 2: Many-to-Many Comparison -->
+        <section class="control-section">
+            <h2>Multi-Level & Multi-Subscale Comparison</h2>
+            <p>Select the levels and subscales you wish to compare side-by-side.</p>
+            <div class="controls-wrapper" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+                <fieldset>
+                    <legend>1. Choose Levels</legend>
+                    <div id="level-checkboxes" class="checkbox-group"></div>
+                </fieldset>
+                <fieldset>
+                    <legend>2. Choose Subscales</legend>
+                    <div id="subscale-checkboxes" class="checkbox-group"></div>
+                </fieldset>
+                <button id="compare-button">Compare Selections</button>
+            </div>
+        </section>
+
+        <!-- Results Display Container -->
         <div id="results-container">
-            <p class="placeholder">Your results will be displayed here.</p>
+            <p class="placeholder">Select a view or make a comparison to see results here.</p>
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        // --- DATA ---
+        const assessmentData = {
+            "A2": {
+                "5": { "content": "All content is relevant to the task. Target reader is fully informed.", "communicativeAchievement": "", "organisation": "Text is connected and coherent, using basic linking words and a limited number of cohesive devices.", "language": "Uses everyday vocabulary generally appropriately, while occasionally overusing certain lexis. Uses simple grammatical forms with a good degree of control. While errors are noticeable, meaning can still be determined." },
+                "4": { "content": "Performance shares features of Bands 3 and 5." },
+                "3": { "content": "Minor irrelevances and/or omissions may be present. Target reader is on the whole informed.", "communicativeAchievement": "", "organisation": "Text is connected using basic, high-frequency linking words.", "language": "Uses basic vocabulary reasonably appropriately. Uses simple grammatical forms with some degree of control. Errors may impede meaning at times." },
+                "2": { "content": "Performance shares features of Bands 1 and 3." },
+                "1": { "content": "Irrelevances and misinterpretation of task may be present. Target reader is minimally informed.", "communicativeAchievement": "", "organisation": "Production unlikely to be connected, though punctuation and simple connectors (i.e. ‘and’) may on occasion be used.", "language": "Produces basic vocabulary of isolated words and phrases. Produces few simple grammatical forms with only limited control." },
+                "0": { "content": "Content is totally irrelevant. Target reader is not informed.", "language": "Performance below Band 1." }
+            },
+            "B1": {
+                "5": { "content": "All content is relevant to the task. Target reader is fully informed.", "communicativeAchievement": "Uses the conventions of the communicative task to hold the target reader’s attention and communicate straightforward ideas.", "organisation": "Text is generally well organised and coherent, using a variety of linking words and cohesive devices.", "language": "Uses a range of everyday vocabulary appropriately, with occasional inappropriate use of less common lexis. Uses a range of simple and some complex grammatical forms with a good degree of control. Errors do not impede communication." },
+                "4": { "content": "Performance shares features of Bands 3 and 5." },
+                "3": { "content": "Minor irrelevances and/or omissions may be present. Target reader is on the whole informed.", "communicativeAchievement": "Uses the conventions of the communicative task in generally appropriate ways to communicate straightforward ideas.", "organisation": "Text is connected and coherent, using basic linking words and a limited number of cohesive devices.", "language": "Uses everyday vocabulary generally appropriately, while occasionally overusing certain lexis. Uses simple grammatical forms with a good degree of control. While errors are noticeable, meaning can still be determined." },
+                "2": { "content": "Performance shares features of Bands 1 and 3." },
+                "1": { "content": "Irrelevances and misinterpretation of task may be present. Target reader is minimally informed.", "communicativeAchievement": "Produces text that communicates simple ideas in simple ways.", "organisation": "Text is connected using basic, high-frequency linking words.", "language": "Uses basic vocabulary reasonably appropriately. Uses simple grammatical forms with some degree of control. Errors may impede meaning at times." },
+                "0": { "content": "Content is totally irrelevant. Target reader is not informed.", "language": "Performance below Band 1." }
+            },
+            "B2": {
+                "5": { "content": "All content is relevant to the task. Target reader is fully informed.", "communicativeAchievement": "Uses the conventions of the communicative task effectively to hold the target reader’s attention and communicate straightforward and complex ideas, as appropriate.", "organisation": "Text is well organised and coherent, using a variety of cohesive devices and organisational patterns to generally good effect.", "language": "Uses a range of vocabulary, including less common lexis, appropriately. Uses a range of simple and complex grammatical forms with control and flexibility. Occasional errors may be present but do not impede communication." },
+                "4": { "content": "Performance shares features of Bands 3 and 5." },
+                "3": { "content": "Minor irrelevances and/or omissions may be present. Target reader is on the whole informed.", "communicativeAchievement": "Uses the conventions of the communicative task to hold the target reader’s attention and communicate straightforward ideas.", "organisation": "Text is generally well organised and coherent, using a variety of linking words and cohesive devices.", "language": "Uses a range of everyday vocabulary appropriately, with occasional inappropriate use of less common lexis. Uses a range of simple and some complex grammatical forms with a good degree of control. Errors do not impede communication." },
+                "2": { "content": "Performance shares features of Bands 1 and 3." },
+                "1": { "content": "Irrelevances and misinterpretation of task may be present. Target reader is minimally informed.", "communicativeAchievement": "Uses the conventions of the communicative task in generally appropriate ways to communicate straightforward ideas.", "organisation": "Text is connected and coherent, using basic linking words and a limited number of cohesive devices.", "language": "Uses everyday vocabulary generally appropriately, while occasionally overusing certain lexis. Uses simple grammatical forms with a good degree of control. While errors are noticeable, meaning can still be determined." },
+                "0": { "content": "Content is totally irrelevant. Target reader is not informed.", "language": "Performance below Band 1." }
+            },
+            "C1": {
+                "5": { "content": "All content is relevant to the task. Target reader is fully informed.", "communicativeAchievement": "Uses the conventions of the communicative task with sufficient flexibility to communicate complex ideas in an effective way, holding the target reader’s attention with ease, fulfilling all communicative purposes.", "organisation": "Text is a well-organised, coherent whole, using a variety of cohesive devices and organisational patterns with flexibility.", "language": "Uses a range of vocabulary, including less common lexis, effectively and precisely. Uses a wide range of simple and complex grammatical forms with full control, flexibility and sophistication. Errors, if present, are related to less common words and structures, or occur as slips." },
+                "4": { "content": "Performance shares features of Bands 3 and 5." },
+                "3": { "content": "Minor irrelevances and/or omissions may be present. Target reader is on the whole informed.", "communicativeAchievement": "Uses the conventions of the communicative task effectively to hold the target reader’s attention and communicate straightforward and complex ideas, as appropriate.", "organisation": "Text is well organised and coherent, using a variety of cohesive devices and organisational patterns to generally good effect.", "language": "Uses a range of vocabulary, including less common lexis, appropriately. Uses a range of simple and complex grammatical forms with control and flexibility. Occasional errors may be present but do not impede communication." },
+                "2": { "content": "Performance shares features of Bands 1 and 3." },
+                "1": { "content": "Irrelevances and misinterpretation of task may be present. Target reader is minimally informed.", "communicativeAchievement": "Uses the conventions of the communicative task to hold the target reader’s attention and communicate straightforward ideas.", "organisation": "Text is generally well organised and coherent, using a variety of linking words and cohesive devices.", "language": "Uses a range of everyday vocabulary appropriately, with occasional inappropriate use of less common lexis. Uses a range of simple and some complex grammatical forms with a good degree of control. Errors do not impede communication." },
+                "0": { "content": "Content is totally irrelevant. Target reader is not informed.", "language": "Performance below Band 1." }
+            },
+            "C2": {
+                "5": { "content": "All content is relevant to the task. Target reader is fully informed.", "communicativeAchievement": "Demonstrates complete command of the conventions of the communicative task. Communicates complex ideas in an effective and convincing way, holding the target reader’s attention with ease, fulfilling all communicative purposes.", "organisation": "Text is organised impressively and coherently using a wide range of cohesive devices and organisational patterns with complete flexibility.", "language": "Uses a wide range of vocabulary, including less common lexis, with fluency, precision, sophistication and style. Use of grammar is sophisticated, fully controlled and completely natural. Any inaccuracies occur only as slips." },
+                "4": { "content": "Performance shares features of Bands 3 and 5." },
+                "3": { "content": "Minor irrelevances and/or omissions may be present. Target reader is on the whole informed.", "communicativeAchievement": "Uses the conventions of the communicative task with sufficient flexibility to communicate complex ideas in an effective way, holding the target reader’s attention with ease, fulfilling all communicative purposes.", "organisation": "Text is a well-organised, coherent whole, using a variety of cohesive devices and organisational patterns with flexibility.", "language": "Uses a range of vocabulary, including less common lexis, effectively and precisely. Uses a wide range of simple and complex grammatical forms with full control, flexibility and sophistication. Errors, if present, are related to less common words and structures, or occur as slips." },
+                "2": { "content": "Performance shares features of Bands 1 and 3." },
+                "1": { "content": "Irrelevances and misinterpretation of task may be present. Target reader is minimally informed.", "communicativeAchievement": "Uses the conventions of the communicative task effectively to hold the target reader’s attention and communicate straightforward and complex ideas, as appropriate.", "organisation": "Text is well organised and coherent, using a variety of cohesive devices and organisational patterns to generally good effect.", "language": "Uses a range of vocabulary, including less common lexis, appropriately. Uses a range of simple and complex grammatical forms with control and flexibility. Occasional errors may be present but do not impede communication." },
+                "0": { "content": "Content is totally irrelevant. Target reader is not informed.", "language": "Performance below Band 1." }
+            }
+        };
+
+        // --- SCRIPT LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Element Selectors ---
+            const levelSelect = document.getElementById('level-select');
+            const copyButton = document.getElementById('copy-markdown-button');
+            const levelCheckboxes = document.getElementById('level-checkboxes');
+            const subscaleCheckboxes = document.getElementById('subscale-checkboxes');
+            const compareButton = document.getElementById('compare-button');
+            const resultsContainer = document.getElementById('results-container');
+            
+            const levels = Object.keys(assessmentData);
+            const subscales = ['content', 'communicativeAchievement', 'organisation', 'language'];
+            
+            // --- Initialization ---
+            function initialize() {
+                populateControls();
+                setupEventListeners();
+            }
+
+            // --- Control Population ---
+            function populateControls() {
+                // Populate level dropdown and checkboxes
+                levels.forEach(level => {
+                    const option = document.createElement('option');
+                    option.value = level;
+                    option.textContent = level;
+                    levelSelect.appendChild(option);
+
+                    const label = document.createElement('label');
+                    label.innerHTML = `<input type="checkbox" value="${level}">${level}`;
+                    levelCheckboxes.appendChild(label);
+                });
+
+                // Populate subscale checkboxes
+                subscales.forEach(subscale => {
+                    const displayName = subscale.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    const label = document.createElement('label');
+                    label.innerHTML = `<input type="checkbox" value="${subscale}">${displayName}`;
+                    subscaleCheckboxes.appendChild(label);
+                });
+            }
+
+            // --- Event Listeners ---
+            function setupEventListeners() {
+                levelSelect.addEventListener('change', handleLevelSelect);
+                copyButton.addEventListener('click', handleCopyMarkdown);
+                compareButton.addEventListener('click', renderComparisonView);
+            }
+
+            // --- Feature 1: Single View Logic ---
+            function handleLevelSelect(e) {
+                const selectedLevel = e.target.value;
+                if (selectedLevel) {
+                    renderSingleLevelView(selectedLevel);
+                    copyButton.style.display = 'inline-block';
+                } else {
+                    resultsContainer.innerHTML = `<p class="placeholder">Select a level to view its table.</p>`;
+                    copyButton.style.display = 'none';
+                }
+            }
+
+            function renderSingleLevelView(level) {
+                const levelData = assessmentData[level];
+                const subscaleHeaders = subscales.map(s => `<th>${s.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</th>`).join('');
+
+                let tableHTML = `<table><thead><tr><th class="th-${level.toLowerCase()}">Band</th>${subscaleHeaders}</tr></thead><tbody>`;
+                
+                Object.keys(levelData).sort((a, b) => b - a).forEach(band => {
+                    const bandData = levelData[band];
+                    if (Object.keys(bandData).length === 1 && (bandData.content || bandData.language)) {
+                        const text = bandData.content || bandData.language;
+                        tableHTML += `<tr><td colspan="${subscales.length + 1}">${text}</td></tr>`;
+                    } else {
+                        tableHTML += `<tr><td>${band}</td>`;
+                        subscales.forEach(subscale => {
+                            tableHTML += `<td>${bandData[subscale] || ''}</td>`;
+                        });
+                        tableHTML += `</tr>`;
+                    }
+                });
+
+                tableHTML += `</tbody></table>`;
+                resultsContainer.innerHTML = tableHTML;
+            }
+
+            function handleCopyMarkdown() {
+                const selectedLevel = levelSelect.value;
+                if (!selectedLevel) return;
+
+                const levelData = assessmentData[selectedLevel];
+                const header = `| Band | ${subscales.map(s => s.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())).join(' | ')} |`;
+                const separator = `|:----:|${subscales.map(() => ':----').join('|')}|`;
+                
+                let markdownRows = [header, separator];
+
+                Object.keys(levelData).sort((a, b) => b - a).forEach(band => {
+                    const bandData = levelData[band];
+                    let row = `| **${band}** |`;
+                    if (Object.keys(bandData).length === 1 && (bandData.content || bandData.language)) {
+                        const text = (bandData.content || bandData.language).replace(/\n/g, ' ');
+                        markdownRows.push(`| ${text} |`); // Simplified for colspan
+                    } else {
+                         row += subscales.map(subscale => (bandData[subscale] || '').replace(/\n/g, ' ').replace(/\|/g, '\\|')).join(' | ');
+                         row += ' |';
+                         markdownRows.push(row);
+                    }
+                });
+
+                const markdownText = markdownRows.join('\n');
+                navigator.clipboard.writeText(markdownText).then(() => {
+                    const originalText = copyButton.textContent;
+                    copyButton.textContent = 'Copied!';
+                    setTimeout(() => { copyButton.textContent = originalText; }, 2000);
+                });
+            }
+
+            // --- Feature 2: Comparison View Logic ---
+            function renderComparisonView() {
+                copyButton.style.display = 'none'; // Hide copy button in this view
+                const selectedLevels = Array.from(levelCheckboxes.querySelectorAll('input:checked')).map(cb => cb.value);
+                const selectedSubscales = Array.from(subscaleCheckboxes.querySelectorAll('input:checked')).map(cb => cb.value);
+
+                if (selectedLevels.length === 0 || selectedSubscales.length === 0) {
+                    resultsContainer.innerHTML = `<p class="placeholder">Please select at least one level AND one subscale to compare.</p>`;
+                    return;
+                }
+
+                // Header Row 1: Levels
+                let headerRow1 = `<tr><th rowspan="2">Band</th>`;
+                selectedLevels.forEach(level => {
+                    headerRow1 += `<th colspan="${selectedSubscales.length}" class="th-${level.toLowerCase()}">${level}</th>`;
+                });
+                headerRow1 += `</tr>`;
+
+                // Header Row 2: Subscales (repeated for each level)
+                let headerRow2 = `<tr>`;
+                selectedLevels.forEach(() => {
+                    selectedSubscales.forEach(subscale => {
+                        const displayName = subscale.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        headerRow2 += `<th>${displayName}</th>`;
+                    });
+                });
+                headerRow2 += `</tr>`;
+
+                // Table Body
+                let bodyHTML = '';
+                const bands = Object.keys(assessmentData.A2).sort((a, b) => b - a);
+                bands.forEach(band => {
+                    const firstLevelData = assessmentData[selectedLevels[0]][band];
+                    if (Object.keys(firstLevelData).length === 1 && (firstLevelData.content || firstLevelData.language)) {
+                        const text = firstLevelData.content || firstLevelData.language;
+                        bodyHTML += `<tr><td colspan="${(selectedLevels.length * selectedSubscales.length) + 1}">${text}</td></tr>`;
+                    } else {
+                        bodyHTML += `<tr><td>${band}</td>`;
+                        selectedLevels.forEach(level => {
+                            selectedSubscales.forEach(subscale => {
+                                const cellData = assessmentData[level][band][subscale] || '';
+                                bodyHTML += `<td>${cellData}</td>`;
+                            });
+                        });
+                        bodyHTML += `</tr>`;
+                    }
+                });
+                
+                resultsContainer.innerHTML = `<table><thead>${headerRow1}${headerRow2}</thead><tbody>${bodyHTML}</tbody></table>`;
+            }
+
+            // --- Start the App ---
+            initialize();
+        });
+    </script>
 </body>
 </html>
