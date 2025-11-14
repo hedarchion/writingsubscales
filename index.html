@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cambridge Writing Assessment Subscales</title>
+    <title>Writing Assessment Subscales</title>
     <subtitle>By Copu</subtitle>
     <style>
         :root {
@@ -96,6 +96,15 @@
 
         .level-selector {
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .level-btns {
+            display: flex;
+            flex-wrap: wrap;
         }
 
         .level-btn {
@@ -117,6 +126,27 @@
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
+        }
+
+        .copy-btn {
+            padding: 8px 16px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .copy-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .copy-icon {
+            margin-right: 5px;
         }
 
         .rubric-table {
@@ -263,13 +293,19 @@
         .notification.show {
             display: block;
         }
+
+        .copy-success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Writing Assessment Subscale</h1>
-            <p class="subtitle">Interactive Cambridge English Writing Assessment Subscales Explorer</p>
+            <h1>Cambridge Writing Assessment Subscales</h1>
+            <p class="subtitle">Interactive CEFR Assessment Criteria Explorer</p>
         </header>
         
         <main>
@@ -280,15 +316,24 @@
             
             <div id="individual" class="tab-content active">
                 <div class="level-selector">
-                    <h2>Select Level:</h2>
-                    <button class="level-btn active" data-level="A2">A2</button>
-                    <button class="level-btn" data-level="B1">B1</button>
-                    <button class="level-btn" data-level="B2">B2</button>
-                    <button class="level-btn" data-level="C1">C1</button>
-                    <button class="level-btn" data-level="C2">C2</button>
+                    <div class="level-btns">
+                        <h2>Select Level:</h2>
+                        <button class="level-btn active" data-level="A2">A2</button>
+                        <button class="level-btn" data-level="B1">B1</button>
+                        <button class="level-btn" data-level="B2">B2</button>
+                        <button class="level-btn" data-level="C1">C1</button>
+                        <button class="level-btn" data-level="C2">C2</button>
+                    </div>
+                    <button class="copy-btn" id="copyBtn">
+                        <span class="copy-icon">📋</span> Copy as Markdown
+                    </button>
                 </div>
                 
                 <div id="levelTable"></div>
+                
+                <div class="notification" id="notification">
+                    Table copied to clipboard!
+                </div>
             </div>
             
             <div id="comparison" class="tab-content">
@@ -312,7 +357,7 @@
                     
                     <button class="compare-btn" id="compareBtn">Compare</button>
                     
-                    <div class="notification" id="notification">
+                    <div class="notification" id="compareNotification">
                         Please select at least one level and one subscale to compare.
                     </div>
                     
@@ -549,6 +594,9 @@
                 });
             });
             
+            // Set up copy button
+            document.getElementById('copyBtn').addEventListener('click', copyTableAsMarkdown);
+            
             // Initialize with A2 level
             displayLevelTable('A2');
             
@@ -598,6 +646,71 @@
             `;
             
             tableContainer.innerHTML = tableHTML;
+        }
+
+        // Function to copy table as markdown
+        function copyTableAsMarkdown() {
+            const activeLevel = document.querySelector('.level-btn.active').getAttribute('data-level');
+            const levelData = rubricData[activeLevel];
+            
+            // Create markdown table
+            let markdown = `# Level ${activeLevel} Assessment Criteria\n\n`;
+            markdown += `| Band | Content | Communicative Achievement | Organisation | Language |\n`;
+            markdown += `|------|---------|---------------------------|--------------|----------|\n`;
+            
+            // Sort bands in descending order (5 to 0)
+            const bands = Object.keys(levelData).sort((a, b) => b - a);
+            
+            bands.forEach(band => {
+                const bandData = levelData[band];
+                const content = (bandData.Content || '').replace(/\|/g, '\\|');
+                const commAch = (bandData['Communicative Achievement'] || '').replace(/\|/g, '\\|');
+                const org = (bandData.Organisation || '').replace(/\|/g, '\\|');
+                const lang = (bandData.Language || '').replace(/\|/g, '\\|');
+                
+                markdown += `| ${band} | ${content} | ${commAch} | ${org} | ${lang} |\n`;
+            });
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(markdown).then(() => {
+                // Show notification
+                const notification = document.getElementById('notification');
+                notification.classList.add('show', 'copy-success');
+                
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show', 'copy-success');
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = markdown;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    
+                    // Show notification
+                    const notification = document.getElementById('notification');
+                    notification.classList.add('show', 'copy-success');
+                    
+                    // Hide notification after 3 seconds
+                    setTimeout(() => {
+                        notification.classList.remove('show', 'copy-success');
+                    }, 3000);
+                } catch (err) {
+                    console.error('Fallback copy failed: ', err);
+                }
+                
+                document.body.removeChild(textArea);
+            });
         }
 
         // Function to set up comparison view
@@ -651,7 +764,7 @@
             
             // Check if selections are made
             if (selectedLevels.length === 0 || selectedSubscales.length === 0) {
-                const notification = document.getElementById('notification');
+                const notification = document.getElementById('compareNotification');
                 notification.classList.add('show');
                 setTimeout(() => {
                     notification.classList.remove('show');
